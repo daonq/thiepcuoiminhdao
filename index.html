@@ -1213,31 +1213,39 @@
                         </div>
                     </div>
                     <form id="quoteForm">
+                        <input
+                            type="text"
+                            name="_honey"
+                            tabindex="-1"
+                            autocomplete="off"
+                            style="position: absolute; left: -9999px"
+                            aria-hidden="true"
+                        />
                         <div class="field">
                             <label for="name">Tên của bạn</label
-                            ><input id="name" required placeholder="Nguyễn Minh Anh" />
+                            ><input id="name" name="name" autocomplete="name" required placeholder="Nguyễn Minh Anh" />
                         </div>
                         <div class="field">
                             <label for="phone">Số điện thoại</label
-                            ><input id="phone" type="tel" required placeholder="090 000 0000" />
+                            ><input id="phone" name="phone" type="tel" autocomplete="tel" required placeholder="090 000 0000" />
                         </div>
                         <div class="field">
                             <label for="quantity">Số lượng dự kiến</label
-                            ><select id="quantity">
+                            ><select id="quantity" name="quantity">
                                 <option>100–200 thiệp</option>
                                 <option>200–300 thiệp</option>
                                 <option>Trên 300 thiệp</option>
                             </select>
                         </div>
                         <div class="field">
-                            <label for="date">Ngày cưới dự kiến</label><input id="date" type="date" />
+                            <label for="date">Ngày cưới dự kiến</label><input id="date" name="wedding_date" type="date" />
                         </div>
                         <div class="field full">
                             <label for="note">Phong cách bạn yêu thích</label
-                            ><textarea id="note" placeholder="Ví dụ: tối giản, tông đỏ rượu, có ép kim..."></textarea>
+                            ><textarea id="note" name="message" placeholder="Ví dụ: tối giản, tông đỏ rượu, có ép kim..."></textarea>
                         </div>
                         <button class="btn" type="submit">Gửi yêu cầu tư vấn <span>→</span></button>
-                        <p class="form-note" role="status"></p>
+                        <p class="form-note" role="status" aria-live="polite"></p>
                     </form>
                 </div>
             </section>
@@ -1320,12 +1328,45 @@
                         );
                 })
             );
-            document.querySelector("#quoteForm").addEventListener("submit", (e) => {
+            document.querySelector("#quoteForm").addEventListener("submit", async (e) => {
                 e.preventDefault();
-                const name = document.querySelector("#name").value.trim();
-                e.currentTarget.querySelector(".form-note").textContent =
-                    `Cảm ơn ${name}! Thiệp Cưới Minh Đạo đã nhận yêu cầu và sẽ sớm liên hệ với bạn.`;
-                e.currentTarget.reset();
+                const form = e.currentTarget;
+                const button = form.querySelector('button[type="submit"]');
+                const status = form.querySelector(".form-note");
+                if (form.elements._honey.value) return;
+
+                const name = form.elements.name.value.trim();
+                button.disabled = true;
+                button.innerHTML = "Đang gửi…";
+                status.textContent = "";
+
+                try {
+                    const response = await fetch("https://formsubmit.co/ajax/daonq.works@gmail.com", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Accept: "application/json",
+                        },
+                        body: JSON.stringify({
+                            _subject: "Yêu cầu tư vấn mới từ website Thiệp Cưới Minh Đạo",
+                            "Tên khách hàng": name,
+                            "Số điện thoại": form.elements.phone.value.trim(),
+                            "Số lượng dự kiến": form.elements.quantity.value,
+                            "Ngày cưới dự kiến": form.elements.wedding_date.value || "Chưa xác định",
+                            "Phong cách mong muốn": form.elements.message.value.trim() || "Không ghi chú",
+                        }),
+                    });
+                    if (!response.ok) throw new Error("Không thể gửi biểu mẫu");
+
+                    status.textContent = `Cảm ơn ${name}! Yêu cầu đã được gửi tới Thiệp Cưới Minh Đạo.`;
+                    form.reset();
+                } catch (error) {
+                    status.textContent =
+                        "Chưa gửi được yêu cầu. Bạn vui lòng gọi 0904 611 892 hoặc thử lại sau.";
+                } finally {
+                    button.disabled = false;
+                    button.innerHTML = "Gửi yêu cầu tư vấn <span>→</span>";
+                }
             });
         </script>
     </body>
