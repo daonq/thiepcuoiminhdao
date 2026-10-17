@@ -396,47 +396,41 @@
                 box-shadow: var(--shadow);
             }
             .card-art {
-                aspect-ratio: 0.86;
+                aspect-ratio: 1 / 1;
                 position: relative;
                 overflow: hidden;
-                display: grid;
-                place-items: center;
+                background: #eee7dc;
             }
-            .card-art::before {
-                content: "";
+            .card-art img {
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+                transition: transform 0.55s ease;
+            }
+            .card:hover .card-art img {
+                transform: scale(1.035);
+            }
+            .card-code {
                 position: absolute;
-                inset: 0;
-                background: var(--bg);
+                left: 12px;
+                bottom: 12px;
+                padding: 7px 10px;
+                background: rgba(255, 250, 241, 0.92);
+                color: var(--wine);
+                font-size: 11px;
+                font-weight: 600;
+                letter-spacing: 0.08em;
+                box-shadow: 0 4px 18px rgba(65, 33, 25, 0.12);
             }
-            .mini-card {
-                width: 64%;
-                height: 76%;
-                background: #fffaf1;
-                box-shadow: 0 15px 35px rgba(65, 33, 25, 0.2);
-                transform: rotate(var(--rot, 0deg));
-                display: grid;
-                place-content: center;
-                text-align: center;
-                color: var(--accent, var(--wine));
-                padding: 25px;
-                position: relative;
-                border: 1px solid rgba(255, 255, 255, 0.6);
+            .card-info > div {
+                min-width: 0;
             }
-            .mini-card::after {
-                content: "";
-                position: absolute;
-                inset: 11px;
-                border: 1px solid var(--accent, var(--wine));
-                opacity: 0.4;
-            }
-            .mini-card i {
-                font: italic 30px "Playfair Display";
-            }
-            .mini-card small {
-                font-size: 7px;
-                letter-spacing: 0.2em;
-                text-transform: uppercase;
-                margin-top: 12px;
+            .card-price {
+                color: var(--wine) !important;
+                font-size: 18px !important;
+                font-weight: 700;
+                white-space: nowrap;
             }
             .card-info {
                 display: flex;
@@ -1046,60 +1040,17 @@
                 <div class="wrap">
                     <div class="section-head">
                         <div>
-                            <div class="eyebrow">Bộ sưu tập nổi bật</div>
-                            <h2>Chọn phong cách của bạn</h2>
+                            <div class="eyebrow">Bộ sưu tập thiệp cưới</div>
+                            <h2>Chọn mẫu thiệp của bạn</h2>
                         </div>
                         <div class="filters">
                             <button class="filter active" data-filter="all">Tất cả</button
-                            ><button class="filter" data-filter="classic">Cổ điển</button
-                            ><button class="filter" data-filter="modern">Hiện đại</button
-                            ><button class="filter" data-filter="minimal">Tối giản</button>
+                            ><button class="filter" data-filter="b">Mẫu B</button
+                            ><button class="filter" data-filter="hd">Mẫu HD</button
+                            ><button class="filter" data-filter="tn">Mẫu TN</button>
                         </div>
                     </div>
-                    <div class="grid">
-                        <article class="card" data-cat="classic">
-                            <div class="card-art" style="--bg: linear-gradient(135deg, #e7d2bd, #c69679)">
-                                <div class="mini-card" style="--rot: -4deg">
-                                    <i>Uyên ương</i><small>Save the date</small>
-                                </div>
-                            </div>
-                            <div class="card-info">
-                                <div>
-                                    <h3>Hồng Son</h3>
-                                    <span>Cổ điển · Ép kim</span>
-                                </div>
-                                <span>01</span>
-                            </div>
-                        </article>
-                        <article class="card" data-cat="minimal">
-                            <div class="card-art" style="--bg: linear-gradient(145deg, #b9ad9c, #e7dfd0)">
-                                <div class="mini-card" style="--rot: 3deg; --accent: #555c4b">
-                                    <i>An &amp; Nhiên</i><small>Our wedding day</small>
-                                </div>
-                            </div>
-                            <div class="card-info">
-                                <div>
-                                    <h3>Vườn Nhiên</h3>
-                                    <span>Tối giản · Giấy mỹ thuật</span>
-                                </div>
-                                <span>02</span>
-                            </div>
-                        </article>
-                        <article class="card" data-cat="modern">
-                            <div class="card-art" style="--bg: linear-gradient(145deg, #e8c4c5, #b66c73)">
-                                <div class="mini-card" style="--rot: -2deg; --accent: #9a3e4b">
-                                    <i>Trăm năm</i><small>22 · 11 · 2026</small>
-                                </div>
-                            </div>
-                            <div class="card-info">
-                                <div>
-                                    <h3>Vân Hồng</h3>
-                                    <span>Hiện đại · Bế nổi</span>
-                                </div>
-                                <span>03</span>
-                            </div>
-                        </article>
-                    </div>
+                    <div class="grid" id="cardGrid" aria-live="polite"></div>
                 </div>
             </section>
             <section id="quy-trinh">
@@ -1300,6 +1251,66 @@
             </div>
         </footer>
         <script>
+            const invitationCodes = [
+                "B 236", "B 237", "B 238", "B 239", "B 240", "B 241",
+                "HD cấp sắc 01", "HD mừng thọ 01", "HD mừng thọ 02",
+                "HD 001", "HD 002", "HD 003", "HD 004", "HD 005", "HD 006", "HD 007", "HD 008", "HD 009",
+                "HD 010", "HD 011", "HD 012", "HD 013", "HD 014", "HD 015", "HD 016", "HD 017", "HD 021", "HD 029",
+                "HD 324", "HD 325", "HD 326", "HD 327", "HD 328", "HD 329", "HD 341", "HD 342", "HD 344",
+                "HD 383", "HD 384", "HD 385", "HD 386", "HD 387", "HD 389", "HD 390", "HD 393", "HD 394",
+                "HD 402", "HD 403", "HD 405", "HD 406", "HD 407", "HD 408", "HD 409", "HD 412", "HD 415",
+                "HD 416", "HD 419", "HD 426", "HD 430", "HD 433", "HD 439", "HD 441", "HD 442", "HD 444",
+                "HD 445", "HD 447", "HD 448", "HD 450", "HD 454", "HD 455", "HD 456", "HD 457", "HD 458",
+                "HD 460", "HD 478", "HD 479", "HD 480", "HD 482", "HD 483", "HD 484", "HD 485", "HD 486",
+                "HD 487", "HD 488", "HD 489", "HD 490", "HD 491", "HD 492", "HD 493", "HD 494", "HD 495",
+                "HD 496", "HD 497", "HD 498", "HD 499", "HD 500", "HD 501", "HD 502", "HD 503", "HD 504",
+                "HD 506", "HD 507", "HD 508", "HD 510", "HD 512", "HD 513 - TN 213", "HD 514 - TN 214",
+                "HD 516 - TN 216", "HD 517 - TN 217", "HD 518 - TN 218", "HD 519 - TN 219", "HD 520", "HD 521",
+                "HD 522", "HD 523", "HD 524", "HD 525 - TN 525", "HD 526 - TN 526", "HD 527 - TN 527",
+                "HD 528 - TN 528", "HD 529 - TN 529", "HD 530 - TN 530", "HD 531 - TN 531", "HD 532 - TN 532",
+                "HD 533 - TN 533", "HD 534 - TN 534", "HD 535 - TN 535", "HD 536 - TN 536", "HD 537 - TN 537",
+                "HD 538 - TN 538", "HD 539 - TN 539", "HD 540 - TN 540", "HD 541 - TN 541", "HD 542 - TN 542",
+                "HD 543 - TN 543", "HD 544 - TN 544", "HD 545 - TN 545", "HD 546 - TN 546", "HD 547 - TN 547",
+                "HD 548 - TN 548", "HD 549 - TN 549", "HD 550 - TN 550", "HD 551 - TN 551", "HD 552 - TN 552",
+                "HD 553 - TN 553", "HD 554 - TN 554", "HD 555 - TN 555", "HD 556 - TN 556", "HD 557 - TN 557",
+                "HD 558 - TN 558", "HD 559 - TN 559", "HD 560 - TN 560", "HD 561 - TN 561", "HD 562 - TN 562",
+                "HD 563 - TN 563", "HD 564 - TN 564", "HD 565 - TN 565", "HD 566 - TN 566", "HD 567 - TN 567",
+                "HD 568 - TN 568", "HD 569 - TN 569", "HD 570 - TN 570", "HD 571 - TN 571", "HD 572 - TN 572",
+                "HD 573 - TN 573", "HD 574 - TN 574", "HD 575 - TN 575", "HD 576 - TN 576", "HD 577 - TN 577",
+                "HD 578 - TN 578", "HD 579 - TN 579", "HD 580 - TN 580", "HD 589 - TN 589", "HD 590 - TN 590",
+                "HD 591 - TN 591", "HD 592 - TN 592", "HD 593 - TN 593", "HD 594 - TN 594", "HD 595 - TN 595",
+                "HD 597 - TN 597", "HD 598 - TN 598", "HD 599 - TN 599", "HD 600 - TN 600", "HD 601 - TN 601",
+                "HD 602 - TN 602", "HD 603 - TN 603", "HD 604 - TN 604", "HD 605 - TN 605", "HD 606 - TN 606",
+                "HD 607 - TN 607", "HD 608 - TN 608", "HD 615 - TN 615", "HD 619 - TN 619", "HD 625 - TN 625",
+                "HD 630", "HD 701 - TN 701", "HD 702 - TN 702", "HD 703 - TN 703", "HD 704 - TN 704",
+                "HD 705 - TN 705", "HD 706 - TN 706", "HD 707 - TN 707", "HD 708 - TN 708", "HD 800 - TN 800",
+                "HD 801 - TN 801", "HD 802 - TN 802", "HD 803 - TN 803", "HD 804 - TN 804", "HD 805 - TN 805",
+                "HD 806 - TN 806", "HD 807 - TN 807", "HD 808 - TN 808", "HD 809 - TN 809", "HD 810 - TN 810",
+                "HD 811 - TN 811", "HD 812 - TN 812", "HD 813 - TN 813", "HD 814 - TN 814", "HD 815 - TN 815",
+                "HD 816 - TN 816", "HD 817 - TN 817", "HD 818 - TN 818",
+                "TN 101", "TN 102", "TN 103", "TN 105", "TN 106", "TN 107", "TN 108", "TN 110", "TN 111",
+                "TN 112", "TN 113", "TN 115", "TN 116", "TN 117", "TN 118", "TN 119", "TN 122", "TN 123",
+                "TN 124", "TN 125", "TN 126", "TN 127", "TN 128", "TN 129", "TN 130", "TN 131", "TN 132",
+                "TN 133", "TN 136", "TN 138", "TN 139", "TN 140", "TN 141", "TN 142", "TN 143", "TN 144",
+                "TN 145", "TN 146", "TN 147", "TN 148", "TN 150", "TN 153", "TN 154", "TN 155", "TN 156",
+                "TN 157", "TN 158", "TN 159", "TN 160", "TN 181", "TN 182", "TN 183", "TN 184"
+            ];
+            const cardGrid = document.querySelector("#cardGrid");
+            cardGrid.innerHTML = invitationCodes.map((code) => {
+                const fileName = `${code.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}.jpg`;
+                const category = [code.startsWith("B ") && "b", code.includes("HD") && "hd", code.includes("TN") && "tn"].filter(Boolean).join(" ");
+                return `<article class="card" data-cat="${category}">
+                    <div class="card-art">
+                        <img src="assets/cards/${fileName}" alt="Mẫu thiệp cưới ${code}" loading="lazy" decoding="async">
+                        <span class="card-code">${code}</span>
+                    </div>
+                    <div class="card-info">
+                        <div><h3>Thiệp cưới ${code}</h3><span>Giá tham khảo / thiệp</span></div>
+                        <span class="card-price">2.500đ</span>
+                    </div>
+                </article>`;
+            }).join("");
+
             const menu = document.querySelector(".menu"),
                 nav = document.querySelector("#nav");
             menu.addEventListener("click", () => {
@@ -1323,7 +1334,7 @@
                         .forEach((card) =>
                             card.classList.toggle(
                                 "hidden",
-                                btn.dataset.filter !== "all" && card.dataset.cat !== btn.dataset.filter
+                                btn.dataset.filter !== "all" && !card.dataset.cat.split(" ").includes(btn.dataset.filter)
                             )
                         );
                 })
