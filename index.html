@@ -632,6 +632,32 @@
                 width: 105px;
                 color: var(--wine);
             }
+            .contact-list .locations {
+                padding: 22px 0 0;
+                border-bottom: 0;
+            }
+            .locations > b {
+                display: block;
+                width: auto;
+                margin-bottom: 12px;
+                font-size: 11px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+            }
+            .location-item {
+                display: grid;
+                grid-template-columns: 118px 1fr;
+                gap: 12px;
+                padding: 11px 0;
+                border-bottom: 1px solid var(--line);
+                font-style: normal;
+                line-height: 1.55;
+            }
+            .location-item strong {
+                color: var(--wine);
+                font-size: 12px;
+                font-weight: 600;
+            }
             form {
                 background: var(--cream);
                 padding: 44px;
@@ -882,6 +908,10 @@
                 section {
                     padding: 78px 0;
                 }
+                .location-item {
+                    grid-template-columns: 1fr;
+                    gap: 2px;
+                }
                 .hero h1 {
                     font-size: 52px;
                 }
@@ -1010,11 +1040,11 @@
                     </svg>
                     <div class="invitation">
                         <small>Trân trọng báo tin lễ thành hôn</small>
-                        <div class="names">Minh &amp; Đào</div>
-                        <small>Chủ nhật</small>
-                        <div class="date">20 · 12 · 2026</div>
+                        <div class="names">Huy Hiếu &amp; Ánh Dương</div>
+                        <small>Thứ Bảy</small>
+                        <div class="date">12 · 12 · 2026</div>
                     </div>
-                    <div class="seal">MĐ</div>
+                    <div class="seal">HD</div>
                 </div>
             </section>
             <section>
@@ -1029,8 +1059,8 @@
                             mang màu sắc, cá tính và sự trân trọng của hai bạn đến từng vị khách.
                         </p>
                         <div class="stats">
-                            <div class="stat"><b>30+</b><span>Mẫu thiết kế</span></div>
-                            <div class="stat"><b>5–7</b><span>Ngày hoàn thiện</span></div>
+                            <div class="stat"><b>1000+</b><span>Mẫu thiết kế</span></div>
+                            <div class="stat"><b>1–2</b><span>Ngày hoàn thiện</span></div>
                             <div class="stat"><b>100%</b><span>Cá nhân hóa</span></div>
                         </div>
                     </div>
@@ -1161,6 +1191,25 @@
                             <div><b>Điện thoại</b> <a href="tel:0904611892">0904 611 892</a></div>
                             <div><b>Email</b> <a href="mailto:daonq.works@gmail.com">daonq.works@gmail.com</a></div>
                             <div><b>Giờ mở cửa</b> 06:00 — 23:00</div>
+                            <div class="locations">
+                                <b>Hệ thống cơ sở</b>
+                                <address class="location-item">
+                                    <strong>Trụ sở chính</strong>
+                                    <span>Ninh Môn, Xã Nội Bài, TP. Hà Nội</span>
+                                </address>
+                                <address class="location-item">
+                                    <strong>Cơ sở Online 1</strong>
+                                    <span>Cầu Giấy, Phường Nghĩa Đô, TP. Hà Nội</span>
+                                </address>
+                                <address class="location-item">
+                                    <strong>Cơ sở Online 2</strong>
+                                    <span>Phú Thượng, Xã Kim Anh, TP. Hà Nội</span>
+                                </address>
+                                <address class="location-item">
+                                    <strong>Cơ sở Online 3</strong>
+                                    <span>Cao Lỗ, Xã Đông Anh, TP. Hà Nội</span>
+                                </address>
+                            </div>
                         </div>
                     </div>
                     <form id="quoteForm">
@@ -1183,9 +1232,11 @@
                         <div class="field">
                             <label for="quantity">Số lượng dự kiến</label
                             ><select id="quantity" name="quantity">
-                                <option>100–200 thiệp</option>
-                                <option>200–300 thiệp</option>
-                                <option>Trên 300 thiệp</option>
+                                <option>100 thiệp</option>
+                                <option>200 thiệp</option>
+                                <option>300 thiệp</option>
+                                <option>500 thiệp</option>
+                                <option>1000 thiệp</option>
                             </select>
                         </div>
                         <div class="field">
