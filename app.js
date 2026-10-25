@@ -23,3 +23,45 @@ document.querySelectorAll('.filter-btn').forEach(b=>b.addEventListener('click',(
 const menu=document.querySelector('.menu-btn'),nav=document.querySelector('.nav-links');menu?.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));document.body.classList.toggle('menu-open',open)});
 const form=document.querySelector('#quoteForm');form?.addEventListener('submit',async e=>{e.preventDefault();const status=form.querySelector('.form-status'),btn=form.querySelector('button[type=submit]');if(form.elements._honey?.value)return;btn.disabled=true;status.textContent='Đang gửi yêu cầu…';try{const response=await fetch('https://formsubmit.co/ajax/daonq.works@gmail.com',{method:'POST',headers:{Accept:'application/json'},body:new FormData(form)});if(!response.ok)throw new Error();form.reset();status.textContent='Minh Đạo đã nhận được yêu cầu. Cảm ơn bạn!'}catch{status.textContent='Chưa thể gửi tự động. Bạn vui lòng gọi 0904 611 892 hoặc gửi email trực tiếp.'}finally{btn.disabled=false}});
 
+// Count one website visit per browser every 30 minutes, then show live period totals on the homepage.
+const visitCountEls=document.querySelectorAll('[data-visit-count]');
+{
+  const VISIT_API='https://abacus.jasoncameron.dev';
+  const VISIT_NAMESPACE='thiepcuoiminhdao-vn-2026';
+  const VISIT_THROTTLE=30*60*1000;
+  const numberFormat=new Intl.NumberFormat('vi-VN');
+  const nowParts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Ho_Chi_Minh',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).filter(part=>part.type!=='literal').map(part=>[part.type,part.value]));
+  const localDate=new Date(Date.UTC(Number(nowParts.year),Number(nowParts.month)-1,Number(nowParts.day)));
+  const dayNumber=localDate.getUTCDay()||7;
+  localDate.setUTCDate(localDate.getUTCDate()+4-dayNumber);
+  const weekYear=localDate.getUTCFullYear();
+  const yearStart=new Date(Date.UTC(weekYear,0,1));
+  const weekNumber=Math.ceil((((localDate-yearStart)/86400000)+1)/7);
+  const keys={
+    total:'total',
+    day:`day-${nowParts.year}-${nowParts.month}-${nowParts.day}`,
+    week:`week-${weekYear}-${String(weekNumber).padStart(2,'0')}`,
+    month:`month-${nowParts.year}-${nowParts.month}`,
+    year:`year-${nowParts.year}`
+  };
+  const lastVisit=Number(localStorage.getItem('md-visit-last-counted')||0);
+  const shouldCount=Date.now()-lastVisit>VISIT_THROTTLE;
+  const action=shouldCount?'hit':'get';
+  const statusEl=document.querySelector('#visitStatus');
+  Promise.all(Object.entries(keys).map(async([period,key])=>{
+    const response=await fetch(`${VISIT_API}/${action}/${VISIT_NAMESPACE}/${key}`,{cache:'no-store'});
+    if(!response.ok)throw new Error(`Visitor counter returned ${response.status}`);
+    const data=await response.json();
+    const value=Number(data.value);
+    if(!Number.isFinite(value))throw new Error('Invalid visitor count');
+    const output=document.querySelector(`[data-visit-count="${period}"]`);
+    if(output)output.textContent=numberFormat.format(value);
+  })).then(()=>{
+    if(shouldCount)localStorage.setItem('md-visit-last-counted',String(Date.now()));
+    if(statusEl)statusEl.textContent='Số liệu được cập nhật tự động theo giờ Việt Nam.';
+  }).catch(()=>{
+    visitCountEls.forEach(el=>{if(el.textContent==='—')el.textContent='--'});
+    if(statusEl){statusEl.textContent='Chưa thể tải số lượt truy cập. Vui lòng thử lại sau.';statusEl.classList.add('error')}
+  });
+}
+
